@@ -7,10 +7,11 @@ cat
 
 
 # Librerías
-library("rjson")
 
 
 datos = read.csv("Datos/covid19-pcr-positives.csv",stringsAsFactors = FALSE)
+datos$date = as.POSIXct(datos$date,format = "%Y-%m-%d")
+
 
 summary(datos)
 
