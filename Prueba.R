@@ -62,13 +62,21 @@ i1$ratio_positivos = i1$positivos_diarios/ i1$PCR_diarios
 i1 = i1[, c(1,4)]
 datos_generales = merge(x=datos_generales, y=i1, by='fecha', all.x = T, )
 
-datos_generales$positivos_diarios = replace(datos_generales$positivos_diarios, is.na(datos_generales$positivos_diarios),0)
+datos_generales$positivos_diarios = replace(datos_generales$positivos_diarios,
+                                            is.na(datos_generales$positivos_diarios),
+                                            0)
 
 p2 <- ggplot(data=datos_generales, aes(x=PCR_diarios, group=positivos_diarios, fill=positivos_diarios)) +
   geom_density(adjust=1.5, alpha=.4) +
   theme_ipsum()
 
-p2
+p <- datos_generales %>%
+  ggplot( aes(x=fecha, fill=positivos_diarios)) + # ERROR EN FILL!!
+  geom_histogram( color="#e9ecef", alpha=0.6, position = 'identity') +
+  scale_fill_manual(values=c("#69b3a2", "#404080")) +
+  theme_ipsum() +
+  labs(fill="")
+p
 
 summary(datos_generales) 
  
