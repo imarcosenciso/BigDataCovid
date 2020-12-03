@@ -49,9 +49,13 @@ datos_generales = merge(x=datos_generales, y=datos_positivos, by='fecha', all.x=
 
 datos_generales = datos_generales[-c(284), ] # Quitamos la fila extra que se crea.
 
+# Añadimos el ratio de PCR positivas.s
 i1 = datos_generales[,c(1,5,6)]
 i1 = i1[complete.cases(i1), ]
-datos_generales[i1, "ratio_positivos"] = datos_generales$positivos_diarios[i1] + datos_generales$PCR_diarios[i1]
+i1$Fecha = as.Date(datos_positivos$Fecha, format = "%d/%m/%Y")
+i1$ratio_positivos = i1$positivos_diarios/ i1$PCR_diarios
+i1 = i1[, c(1,4)]
+datos_generales = merge(x=datos_generales, y=i1, by='fecha', all.x = T, )
 
 summary(datos_generales) 
  
