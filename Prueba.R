@@ -7,6 +7,11 @@ cat
 
 
 # Librerías
+library(ggplot2)
+library(hrbrthemes)
+library(dplyr)
+library(tidyr)
+library(viridis)
 
 
 # Datos generales
@@ -56,6 +61,14 @@ i1$Fecha = as.Date(datos_positivos$Fecha, format = "%d/%m/%Y")
 i1$ratio_positivos = i1$positivos_diarios/ i1$PCR_diarios
 i1 = i1[, c(1,4)]
 datos_generales = merge(x=datos_generales, y=i1, by='fecha', all.x = T, )
+
+datos_generales$positivos_diarios = replace(datos_generales$positivos_diarios, is.na(datos_generales$positivos_diarios),0)
+
+p2 <- ggplot(data=datos_generales, aes(x=PCR_diarios, group=positivos_diarios, fill=positivos_diarios)) +
+  geom_density(adjust=1.5, alpha=.4) +
+  theme_ipsum()
+
+p2
 
 summary(datos_generales) 
  
