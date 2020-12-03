@@ -52,4 +52,4 @@ datos_generales = datos_generales[-c(284), ] # Quitamos la fila extra que se cre
 i1 = is.na(datos_generales$positivos_diarios)
 datos_generales[i1, "ratio_positivos"] = datos_generales$positivos_diarios[i1] + datos_generales$PCR_diarios[i1]
 
-summary(datos_generales)
+summary(datos_generales) 
