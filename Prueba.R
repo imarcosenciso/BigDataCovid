@@ -147,3 +147,8 @@ ggplot(datos_generales, aes(x=fecha)) +
     axis.title.y.right = element_text(color = color_pos, size=15)
   ) +
   ggtitle("Pruebas PCR y número de positivos darios (a escala)")
+
+# Dudas:
+# 1.- Forma de hacer el grafico smooth.
+# 2.- Añadir hitos (desconfinamiento, vacaciones, último estado de alarma).
+# 3.- Mejor representación del eje X (mes a mes).
