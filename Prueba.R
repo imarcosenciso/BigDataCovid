@@ -12,7 +12,14 @@ library(hrbrthemes)
 library(dplyr)
 library(tidyr)
 library(viridis)
+library(reshape2)
 
+
+#########################
+##~~~~~~~~~~~~~~~~~~~~~##
+##       |DATOS|       ##
+##~~~~~~~~~~~~~~~~~~~~~##
+#########################
 
 # Datos generales
 datos_generales = read.csv("Datos/Generales.csv",stringsAsFactors = FALSE, sep=';')
@@ -66,6 +73,12 @@ datos_generales$positivos_diarios = replace(datos_generales$positivos_diarios,
                                             is.na(datos_generales$positivos_diarios),
                                             0)
 
+########################
+##~~~~~~~~~~~~~~~~~~~~##
+##     |GRÁFICOS|     ##
+##~~~~~~~~~~~~~~~~~~~~##
+########################
+
 p2 <- ggplot(data=datos_generales, aes(x=PCR_diarios, group=positivos_diarios, fill=positivos_diarios)) +
   geom_density(adjust=1.5, alpha=.4) +
   theme_ipsum()
@@ -79,4 +92,58 @@ p <- datos_generales %>%
 p
 
 summary(datos_generales) 
- 
+
+p = datos_generales %>%
+ggplot( aes(x=fecha, y=c(PCR_diarios, ))) +
+  geom_line() +
+geom_smooth(method="auto", se=TRUE, fullrange=FALSE, level=0.5)
+
+
+datos_generales.long <- melt(datos_generales,
+                             id = "fecha",
+                             measure = c("PCR_diarios", "positivos_diarios"))
+ggplot(datos_generales.long,
+       aes(fecha, value, colour = variable)) +
+       geom_line() +
+       geom_smooth(method="auto", se=TRUE, fullrange=FALSE, level=0.5)
+
+ggplot(datos_generales, aes(x=fecha)) + 
+  geom_line(aes(y = positivos_diarios), color = "darkred") + 
+  geom_line(aes(y = PCR_diarios), color="steelblue", linetype="twodash") 
+
+
+
+
+
+#######################
+##~~~~~~~~~~~~~~~~~~~##
+##     |GRÁFICO|     ##
+##      |FINAL|      ##
+##~~~~~~~~~~~~~~~~~~~##
+#######################
+# Value used to transform the data
+coeff <- max(datos_generales$PCR_diarios, na.rm = TRUE) / 
+         max(datos_generales$positivos_diarios, na.rm = TRUE)
+
+# A few constants
+color_PCR <- rgb(0.4, 0.6, 0.9, 1)
+color_pos <- "#D62246"
+
+ggplot(datos_generales, aes(x=fecha)) +
+  
+  geom_line( aes(y=PCR_diarios / coeff), size=1.5, color=color_PCR) + 
+  geom_line( aes(y=positivos_diarios), size=1.5, color=color_pos) +
+  
+  scale_y_continuous(
+    # Features of the first axis
+    name = "PCR diarios",
+    
+    # Add a second axis and specify its features
+    sec.axis = sec_axis(~.*coeff, name="Positivos diarios")
+  ) + 
+  theme_ipsum() +
+  theme(
+    axis.title.y = element_text(color = color_PCR, size=15),
+    axis.title.y.right = element_text(color = color_pos, size=15)
+  ) +
+  ggtitle("Pruebas PCR y número de positivos darios (a escala)")
