@@ -105,7 +105,7 @@ datos_generales.long <- melt(datos_generales,
 ggplot(datos_generales.long,
        aes(fecha, value, colour = variable)) +
        geom_line() +
-       geom_smooth(method="auto", se=TRUE, fullrange=FALSE, level=0.5)
+       geom_smooth(method="auto", se=TRUE, fullrange=FALSE, level=1.5)
 
 ggplot(datos_generales, aes(x=fecha)) + 
   geom_line(aes(y = positivos_diarios), color = "darkred") + 
@@ -148,7 +148,17 @@ ggplot(datos_generales, aes(x=fecha)) +
 
 
 # Dudas/mejoras:
-# 1.- Forma de hacer el grafico smooth.
-# 2.- Añadir hitos (desconfinamiento, vacaciones, último estado de alarma).
-# 3.- Mejor representación del eje X (mes a mes).
-# 4.- Fecha en formato incorrecto.
+# 0.- --> normalizar datos.
+# 1.- Forma de hacer el grafico smooth. --> aislar fines de semana (unir viernes con lunes).
+# 2.- Añadir hitos (desconfinamiento, vacaciones, último estado de alarma). --> mejor fuera de R. Mirar por si acaso.
+# 3.- Mejor representación del eje X (mes a mes). --> visualización mes a mes individual.
+# 4.- Fecha en formato incorrecto. --> who knows. lol.
+
+# Trabajo futuro:
+# 1.- Dataset de infectados por género, edad, etc. y mortalidad/casos graves.
+#   1.1 - Limpieza, enriquecimiento, etc.
+#   1.2 - Matriz de correlación y estudio de resultados.
+# 2.- Estudiar la animación del heat-map de infectados por municipio en Euskadi.
+#   2.1 - Generar mapa de calor de cada día.
+#   2.2 - Guardar cada mapa.
+#   2.3 - Animarlo en un programa externo.
