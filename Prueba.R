@@ -61,14 +61,16 @@ datos_generales = merge(x=datos_generales, y=datos_positivos, by='fecha', all.x=
 
 datos_generales = datos_generales[-c(284), ] # Quitamos la fila extra que se crea.
 
-# Añadimos el ratio de PCR positivas.s
+# Añadimos el ratio de PCR positivas.
+# Quitamos todas filas que tuvieran NA, ya que al hacer el ratio daría error.
 i1 = datos_generales[,c(1,5,6)]
 i1 = i1[complete.cases(i1), ]
 i1$Fecha = as.Date(datos_positivos$Fecha, format = "%d/%m/%Y")
-i1$ratio_positivos = i1$positivos_diarios/ i1$PCR_diarios
-i1 = i1[, c(1,4)]
+i1$ratio_positivos = i1$positivos_diarios/ i1$PCR_diarios # Creamos ratios.
+i1 = i1[, c(1,4)] # Nos quedamos con fecha y ratio para el merge.
 datos_generales = merge(x=datos_generales, y=i1, by='fecha', all.x = T, )
 
+# Sustituimos valores NA por 0 (pensando en los gráficos).
 datos_generales$positivos_diarios = replace(datos_generales$positivos_diarios,
                                             is.na(datos_generales$positivos_diarios),
                                             0)
@@ -91,8 +93,6 @@ p <- datos_generales %>%
   labs(fill="")
 p
 
-summary(datos_generales) 
-
 p = datos_generales %>%
 ggplot( aes(x=fecha, y=c(PCR_diarios, ))) +
   geom_line() +
@@ -110,8 +110,6 @@ ggplot(datos_generales.long,
 ggplot(datos_generales, aes(x=fecha)) + 
   geom_line(aes(y = positivos_diarios), color = "darkred") + 
   geom_line(aes(y = PCR_diarios), color="steelblue", linetype="twodash") 
-
-
 
 
 
@@ -148,7 +146,9 @@ ggplot(datos_generales, aes(x=fecha)) +
   ) +
   ggtitle("Pruebas PCR y número de positivos darios (a escala)")
 
-# Dudas:
+
+# Dudas/mejoras:
 # 1.- Forma de hacer el grafico smooth.
 # 2.- Añadir hitos (desconfinamiento, vacaciones, último estado de alarma).
 # 3.- Mejor representación del eje X (mes a mes).
+# 4.- Fecha en formato incorrecto.
