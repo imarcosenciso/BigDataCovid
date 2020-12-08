@@ -13,6 +13,7 @@ library(dplyr)
 library(tidyr)
 library(viridis)
 library(reshape2)
+library(BBmisc)
 
 
 #########################
@@ -75,6 +76,26 @@ datos_generales$positivos_diarios = replace(datos_generales$positivos_diarios,
                                             is.na(datos_generales$positivos_diarios),
                                             0)
 
+
+#######################
+##     |CAMBIOS|     ##
+#######################
+
+# Normalizar las columnas PCR_diarios y positivos_diarios y añadirlas al dataframe.
+datos_generales$PCR_diarios_normalizado = normalize(datos_generales$PCR_diarios,
+                                                       method = "range",
+                                                       range = c(0, 100) # De 0 a 100 de manera arbitraria
+                                                       )
+
+datos_generales$positivos_diarios_normalizado = normalize(datos_generales$positivos_diarios,
+                                                       method = "range",
+                                                       range = c(0, 100)
+)
+
+############################
+##     | FIN CAMBIOS|     ##
+############################
+
 ########################
 ##~~~~~~~~~~~~~~~~~~~~##
 ##     |GRÁFICOS|     ##
@@ -119,40 +140,58 @@ ggplot(datos_generales, aes(x=fecha)) +
 ##      |FINAL|      ##
 ##~~~~~~~~~~~~~~~~~~~##
 #######################
-# Value used to transform the data
-coeff <- max(datos_generales$PCR_diarios, na.rm = TRUE) / 
-         max(datos_generales$positivos_diarios, na.rm = TRUE)
 
-# A few constants
+# * ADAPTADO A LA NORMALIZACIÓN DE LOS DATOS * #
+
+# Colorintxus.
 color_PCR <- rgb(0.4, 0.6, 0.9, 1)
 color_pos <- "#D62246"
 
+dates_vline = as.Date("05/08/2020", "%d/%m/%Y")
+dates_vline = which(datos_generales$fecha %in% dates_vline)
+
 ggplot(datos_generales, aes(x=fecha)) +
   
-  geom_line( aes(y=PCR_diarios / coeff), size=1.5, color=color_PCR) + 
-  geom_line( aes(y=positivos_diarios), size=1.5, color=color_pos) +
+  geom_line( aes(y=PCR_diarios_normalizado), size=1.5, color=color_PCR) + 
+  geom_line( aes(y=positivos_diarios_normalizado), size=1.5, color=color_pos) +
   
   scale_y_continuous(
     # Features of the first axis
     name = "PCR diarios",
     
     # Add a second axis and specify its features
-    sec.axis = sec_axis(~.*coeff, name="Positivos diarios")
+    sec.axis = sec_axis(~.*1, name="Positivos diarios")
   ) + 
+  ############################
+  # * CAMBIO CAMBIO CAMBIO * #
+  ############################
+  # Mejorada la escala del eje X --> se ve mes a mes y con el nombre en lugar del número.
+  scale_x_date(
+    date_labels = "%b",
+    date_breaks = "1 months"
+    ) +
   theme_ipsum() +
   theme(
     axis.title.y = element_text(color = color_PCR, size=15),
     axis.title.y.right = element_text(color = color_pos, size=15)
   ) +
-  ggtitle("Pruebas PCR y número de positivos darios (a escala)")
+  ggtitle("Pruebas PCR y número de positivos darios (datos normalizados)") +
+  ############################
+  # * CAMBIO CAMBIO CAMBIO * #
+  ############################
+  geom_vline( xintercept = as.numeric(datos_generales$fecha[dates_vline]),
+              col = "black", lwd=0.5 ) + 
+  geom_text(aes(x=as.Date("05/08/2020", "%d/%m/%Y"), # ERROR: no aparece.
+                label="Fecha random", y=50),
+            colour="black", angle=45, text=element_text(size=20))
 
 
 # Dudas/mejoras:
-# 0.- --> normalizar datos.
+# 0.- --> normalizar datos. DONE
 # 1.- Forma de hacer el grafico smooth. --> aislar fines de semana (unir viernes con lunes).
-# 2.- Añadir hitos (desconfinamiento, vacaciones, último estado de alarma). --> mejor fuera de R. Mirar por si acaso.
-# 3.- Mejor representación del eje X (mes a mes). --> visualización mes a mes individual.
-# 4.- Fecha en formato incorrecto. --> who knows. lol.
+# 2.- Añadir hitos (desconfinamiento, vacaciones, último estado de alarma). --> mejor fuera de R. Mirar por si acaso. DONE.
+# 3.- Mejor representación del eje X (mes a mes). --> visualización mes a mes individual. DONE
+# 4.- Fecha en formato incorrecto. --> who knows. NO AFECTA. DONE.
 
 # Trabajo futuro:
 # 1.- Dataset de infectados por género, edad, etc. y mortalidad/casos graves.
