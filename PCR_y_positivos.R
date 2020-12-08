@@ -8,12 +8,14 @@ cat
 
 # Librerías
 library(ggplot2)
+library(ggrepel)
 library(hrbrthemes)
 library(dplyr)
 library(tidyr)
 library(viridis)
 library(reshape2)
 library(BBmisc)
+library(lubridate)
 
 
 #########################
@@ -90,7 +92,11 @@ datos_generales$PCR_diarios_normalizado = normalize(datos_generales$PCR_diarios,
 datos_generales$positivos_diarios_normalizado = normalize(datos_generales$positivos_diarios,
                                                        method = "range",
                                                        range = c(0, 100)
-)
+                                                       )
+
+# Eliminamos los fines de semana.
+# wday trata los domingos como primer día de la semana, de ahí el 2:6.
+datos_generales = datos_generales[lubridate::wday(datos_generales$fecha) %in% 2:6,]
 
 ############################
 ##     | FIN CAMBIOS|     ##
@@ -147,6 +153,10 @@ ggplot(datos_generales, aes(x=fecha)) +
 color_PCR <- rgb(0.4, 0.6, 0.9, 1)
 color_pos <- "#D62246"
 
+############################
+# * CAMBIO CAMBIO CAMBIO * #
+############################
+# TODO: añadir fechas importantes con sus respectivos labels en un dataframe.
 dates_vline = as.Date("05/08/2020", "%d/%m/%Y")
 dates_vline = which(datos_generales$fecha %in% dates_vline)
 
@@ -181,14 +191,23 @@ ggplot(datos_generales, aes(x=fecha)) +
   ############################
   geom_vline( xintercept = as.numeric(datos_generales$fecha[dates_vline]),
               col = "black", lwd=0.5 ) + 
-  geom_text(aes(x=as.Date("05/08/2020", "%d/%m/%Y"), # ERROR: no aparece.
-                label="Fecha random", y=50),
-            colour="black", angle=45, text=element_text(size=20))
+  annotate(geom="text", x = as.Date("05/08/2020", "%d/%m/%Y")+17,
+           y=77,
+           label="Inicio cuarentena",
+           color="black"
+           )
+  # Buen intento, pero el texto no es lo suficientemente legible... :C
+  #geom_text(aes (x = as.Date("05/08/2020", "%d/%m/%Y")+5,
+  #               y = 70,
+  #               label = "Inicio\ncuarentena"),
+  #          color = "black",
+  #          size = 3, angle = 0, fontface = "plain"
+  #          )
 
 
 # Dudas/mejoras:
 # 0.- --> normalizar datos. DONE
-# 1.- Forma de hacer el grafico smooth. --> aislar fines de semana (unir viernes con lunes).
+# 1.- Forma de hacer el grafico smooth. --> aislar fines de semana (unir viernes con lunes). DONE.
 # 2.- Añadir hitos (desconfinamiento, vacaciones, último estado de alarma). --> mejor fuera de R. Mirar por si acaso. DONE.
 # 3.- Mejor representación del eje X (mes a mes). --> visualización mes a mes individual. DONE
 # 4.- Fecha en formato incorrecto. --> who knows. NO AFECTA. DONE.
