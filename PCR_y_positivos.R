@@ -164,8 +164,16 @@ hitos = data.frame(
     as.Date("27/03/2020", "%d/%m/%Y"), # Fin actividad no esencial. 27 en lugar de 28.
     as.Date("11/05/2020", "%d/%m/%Y"), # Fase 1. Se puede salir a la calle.
     as.Date("25/05/2020", "%d/%m/%Y"), # Fase 2.
-    as.Date("8/06/2020", "%d/%m/%Y"),  # Fase 3.
-    as.Date("19/06/2020", "%d/%m/%Y") # Fin estado de alarma.
+    as.Date(" 8/06/2020", "%d/%m/%Y"), # Fase 3.
+    as.Date("19/06/2020", "%d/%m/%Y"), # Fin estado de alarma.
+    as.Date("01/07/2020", "%d/%m/%Y"), # Apertura al turismo.
+    as.Date("28/07/2020", "%d/%m/%Y"), # Uso obligatorio de mascarillas
+    as.Date("07/09/2020", "%d/%m/%Y"), # Comienzo clases
+    as.Date("28/09/2020", "%d/%m/%Y"), # Toque de queda. 28 en lugar de 26. +3 por formato.
+    as.Date("09/11/2020", "%d/%m/%Y") # Cierre hostelería. 9 en lugar de 7.
+  ),
+  y = c(
+    77,77,77,77,77,77,77,77,77,77,50
   ),
   label = c(
     "Inicio confinamiento",
@@ -173,7 +181,12 @@ hitos = data.frame(
     "Desescalada, fase 1",
     "Fase 2",
     "Fase 3",
-    "Fin estado de alarma"
+    "Fin estado de alarma",
+    "Turismo internacional",
+    "Uso obligatorio de mascarillas",
+    "Comienzo de las clases",
+    "Toque de queda y\ncierre de la comunidad",
+    "Cierre de la hostelería"
   )
 )
 
@@ -181,17 +194,17 @@ dates_vline = which(datos_generales$fecha %in% hitos$x) # Para que luego aparezc
 
 
 ggplot(datos_generales, aes(x=fecha)) +
-  
+
   geom_line( aes(y=PCR_diarios_normalizado), size=1.5, color=color_PCR) + 
   geom_line( aes(y=positivos_diarios_normalizado), size=1.5, color=color_pos) +
-  
+
   scale_y_continuous(
     # Features of the first axis
     name = "PCR diarios",
-    
+
     # Add a second axis and specify its features
     sec.axis = sec_axis(~.*1, name="Positivos diarios")
-  ) + 
+  ) +
   ############################
   # * CAMBIO CAMBIO CAMBIO * #
   ############################
@@ -212,7 +225,7 @@ ggplot(datos_generales, aes(x=fecha)) +
   geom_vline( xintercept = as.numeric(datos_generales$fecha[dates_vline]),
               col = "black", lwd=0.5, linetype = "longdash") + 
   annotate(geom="text", x = hitos$x+3,
-           y=77,
+           y=hitos$y,
            label=hitos$label,
            color="black",
            angle = 90
