@@ -13,8 +13,16 @@ datos_generales = read.csv("Datos/03.csv",stringsAsFactors = FALSE, sep=';')[1:1
 names(datos_generales)[1] <- "Edad"
 names(datos_generales)[3] <- "PositivosM"
 names(datos_generales)[4] <- "PositivosF"
+names(datos_generales)[16] <- "LetalM"
+names(datos_generales)[17] <- "LetalF"
+
 
 datos_generoEd = datos_generales[1:10,c(1,3,4)]
+muerte_genEd = datos_generales[1:10,c(1,16,17)]
+
+muerte_genEd$LetalM = as.double(muerte_genEd$LetalM)
+summary(muerte_genEd)
+
 
 F=ggplot(datos_generoEd, aes(x=Edad, y=(PositivosF))) + 
   geom_bar(stat = "identity")+
@@ -37,3 +45,24 @@ M=ggplot(datos_generoEd, aes(x=Edad, y=(PositivosM))) +
 figure <- ggarrange(F, M,
                     ncol = 2, nrow = 2)
 figure
+
+FM=ggplot(muerte_genEd, aes(x=Edad, y=(LetalF))) + 
+  geom_bar(stat = "identity")+
+  geom_bar(stat = "identity")+
+  coord_flip()+
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+  )+
+  scale_y_reverse()+
+  
+  scale_x_discrete(position = "top")
+
+MM=ggplot(muerte_genEd, aes(x=Edad, y=(LetalM))) + 
+  geom_bar(stat = "identity")+
+  geom_bar(stat = "identity")+
+  coord_flip()+
+  theme(axis.title.y=element_blank())
+
+figureM <- ggarrange(FM, MM,
+                    ncol = 2, nrow = 2)
+figureM
