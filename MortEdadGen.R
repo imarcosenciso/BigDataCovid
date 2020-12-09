@@ -5,6 +5,7 @@ dir()
 cat
 library(ggplot2)
 library(ggpubr)
+library(stringr)
 theme_set(theme_pubr())
 
 
@@ -19,8 +20,11 @@ names(datos_generales)[17] <- "LetalF"
 
 datos_generoEd = datos_generales[1:10,c(1,3,4)]
 muerte_genEd = datos_generales[1:10,c(1,16,17)]
-
+muerte_genEd$LetalM = str_replace(muerte_genEd$LetalM, "," , ".")
+muerte_genEd$LetalF = str_replace(muerte_genEd$LetalF, "," , ".")
 muerte_genEd$LetalM = as.double(muerte_genEd$LetalM)
+muerte_genEd$LetalF = as.double(muerte_genEd$LetalF)
+
 summary(muerte_genEd)
 
 
@@ -66,3 +70,4 @@ MM=ggplot(muerte_genEd, aes(x=Edad, y=(LetalM))) +
 figureM <- ggarrange(FM, MM,
                     ncol = 2, nrow = 2)
 figureM
+
