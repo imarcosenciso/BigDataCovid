@@ -153,12 +153,32 @@ ggplot(datos_generales, aes(x=fecha)) +
 color_PCR <- rgb(0.4, 0.6, 0.9, 1)
 color_pos <- "#D62246"
 
+
 ############################
 # * CAMBIO CAMBIO CAMBIO * #
 ############################
-# TODO: añadir fechas importantes con sus respectivos labels en un dataframe.
-dates_vline = as.Date("05/08/2020", "%d/%m/%Y")
-dates_vline = which(datos_generales$fecha %in% dates_vline)
+# Dataframe con hitos y fechas
+hitos = data.frame(
+  x = c(
+    as.Date("16/03/2020", "%d/%m/%Y"), # 16 en lugar de 15 al haber eliminado los fines de semana.
+    as.Date("27/03/2020", "%d/%m/%Y"), # Fin actividad no esencial. 27 en lugar de 28.
+    as.Date("11/05/2020", "%d/%m/%Y"), # Fase 1. Se puede salir a la calle.
+    as.Date("25/05/2020", "%d/%m/%Y"), # Fase 2.
+    as.Date("8/06/2020", "%d/%m/%Y"),  # Fase 3.
+    as.Date("19/06/2020", "%d/%m/%Y") # Fin estado de alarma.
+  ),
+  label = c(
+    "Inicio confinamiento",
+    "Cese actividad no esencial",
+    "Desescalada, fase 1",
+    "Fase 2",
+    "Fase 3",
+    "Fin estado de alarma"
+  )
+)
+
+dates_vline = which(datos_generales$fecha %in% hitos$x) # Para que luego aparezcan en el gráfico.
+
 
 ggplot(datos_generales, aes(x=fecha)) +
   
@@ -190,11 +210,12 @@ ggplot(datos_generales, aes(x=fecha)) +
   # * CAMBIO CAMBIO CAMBIO * #
   ############################
   geom_vline( xintercept = as.numeric(datos_generales$fecha[dates_vline]),
-              col = "black", lwd=0.5 ) + 
-  annotate(geom="text", x = as.Date("05/08/2020", "%d/%m/%Y")+17,
+              col = "black", lwd=0.5, linetype = "longdash") + 
+  annotate(geom="text", x = hitos$x+3,
            y=77,
-           label="Inicio cuarentena",
-           color="black"
+           label=hitos$label,
+           color="black",
+           angle = 90
            )
   # Buen intento, pero el texto no es lo suficientemente legible... :C
   #geom_text(aes (x = as.Date("05/08/2020", "%d/%m/%Y")+5,
