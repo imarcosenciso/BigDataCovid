@@ -45,11 +45,11 @@ summary(datos_generales)
 #########################
 #       NORMALIZAR      #
 #########################
-datos_generales$"0-9norm" = normalize(datos_generales$"0-9",
+datos_generales$cero_nueve_norm = normalize(datos_generales$"0-9",
                                                     method = "range",
                                                     range = c(0, 100) # De 0 a 100 de manera arbitraria
 )
-datos_generales$"0-9norm"<-as.numeric(as.character(datos_generales$"0-9norm"))
+datos_generales$cero_nueve_norm<-as.numeric(as.character(datos_generales$cero_nueve_norm))
 summary(datos_generales)
 ##########################
 # QUITAR FINES DE SEMANA #
@@ -103,10 +103,9 @@ dates_vline = which(datos_generales$Fecha %in% hitos$x) # Para que luego aparezc
 
 ggplot(datos_generales, aes(x=Fecha)) +
 
-  geom_line( aes(y="0-9norm"), size=1.5, color=color_PCR) +
-  scale_y_continuous(
+  geom_line( aes(y=cero_nueve_norm), size=1.5, color=color_PCR) +
+  scale_y_discrete(
    name = "PCR diarios",
-   limits=c(0,100)
   ) +
 
   # Mejorada la escala del eje X --> se ve mes a mes y con el nombre en lugar del número.
@@ -115,10 +114,10 @@ ggplot(datos_generales, aes(x=Fecha)) +
     date_breaks = "1 months"
   ) +
   theme_ipsum() +
-  #theme(
-  #  axis.title.y = element_text(color = color_PCR, size=15),
+  theme(
+    axis.title.y = element_text(color = color_PCR, size=15),
     #axis.title.y.right = element_text(color = color_pos, size=15)
-  #) +
+  ) +
   ggtitle("Pruebas PCR y número de positivos darios (datos normalizados)") +
   ############################
 # * CAMBIO CAMBIO CAMBIO * #
