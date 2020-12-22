@@ -102,14 +102,11 @@ dates_vline = which(datos_generales$Fecha %in% hitos$x) # Para que luego aparezc
 
 
 ggplot(datos_generales, aes(x=Fecha)) +
-  
-#  geom_line( aes(y="0-9norm"), size=1.5, color=color_PCR) 
-  geom_line( aes(y="0-9norm"), size=1.5, color=color_pos) +
+
+  geom_line( aes(y="0-9norm"), size=1.5, color=color_PCR) 
+  #geom_line( aes(y="0-9norm"), size=1.5, color=color_pos) +
   scale_y_continuous(
-    # Features of the first axis
-    name = "PCR diarios",
-    # Add a second axis and specify its features
-    sec.axis = sec_axis(~.*1, name="Positivos diarios")
+   name = "PCR diarios",
   ) +
 ############################
 # * CAMBIO CAMBIO CAMBIO * #
@@ -122,7 +119,7 @@ scale_x_date(
   theme_ipsum() +
   theme(
     axis.title.y = element_text(color = color_PCR, size=15),
-    axis.title.y.right = element_text(color = color_pos, size=15)
+    #axis.title.y.right = element_text(color = color_pos, size=15)
   ) +
   ggtitle("Pruebas PCR y número de positivos darios (datos normalizados)") +
   ############################
