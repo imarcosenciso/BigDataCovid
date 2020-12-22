@@ -132,4 +132,4 @@ datos_generales_merged = subset(datos_generales_merged, select = -c(1) )
 
 # Mientras tanto, hacemos la matriz de correlación con lo que tenemos:
 M = cor(datos_generales_merged[,-1])
-corrplot(M, method="ellipse")
+corrplot(M, method="pie")
