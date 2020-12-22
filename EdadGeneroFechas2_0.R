@@ -45,9 +45,6 @@ names(datos_edad)[11] <- "70-79"
 names(datos_edad)[12] <- "80-89"
 names(datos_edad)[13] <- "90+"
 
-edades<-c("0-9", "10-19", "20-29", "30-39","40-49","50-59","60-69","70-79","80-89","90+")
-
-
 
 datos_edad$fecha = as.Date(datos_edad$fecha, format = "%Y/%m/%d")
 summary(datos_edad)
@@ -113,9 +110,9 @@ datos_generales = replace(datos_generales,is.na(datos_generales),0)
 #######################
 
 # Normalizar las columnas PCR_diarios y positivos_diarios y añadirlas al dataframe.
-for (i in 10:19) {
-    
-  
+#for (i in 10:19) {
+#   
+  i=12#TEMPORAAAAAAAAAAAAL
   
   datos_generales$cero_nueve_normalizado = normalize(datos_generales[1:(nrow(datos_generales)),i],
                                                       method = "range",
@@ -192,7 +189,7 @@ for (i in 10:19) {
     
     scale_y_continuous(
       # Features of the first axis
-      name = i,
+      name = names(datos_generales)[i],
       
       # Add a second axis and specify its features
       sec.axis = sec_axis(~.*1, name="Positivos diarios")
@@ -210,7 +207,7 @@ for (i in 10:19) {
       axis.title.y = element_text(color = color_PCR, size=15),
       axis.title.y.right = element_text(color = color_pos, size=15)
     ) +
-    ggtitle("Pruebas PCR y número de positivos darios (datos normalizados)") +
+    ggtitle("(datos normalizados)") +
   ############################
   # * CAMBIO CAMBIO CAMBIO * #
   ############################
@@ -222,6 +219,7 @@ for (i in 10:19) {
              color="black",
              angle = 90
     )
-}
-MiPLot
+  
+#}
 
+MiPLot
