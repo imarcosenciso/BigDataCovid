@@ -23,9 +23,9 @@ datos_generales = read.csv("Datos/09.csv",stringsAsFactors = FALSE, sep=';')[1:2
 
 datos_generales = replace(datos_generales,is.na(datos_generales),0)
 
-names(datos_generales)[1] <- "Fecha"
-names(datos_generales)[2] <- "PositivosM"
-names(datos_generales)[3] <- "PositivosF"
+names(datos_generales)[1] <- "fecha"
+names(datos_generales)[2] <- "positivosM"
+names(datos_generales)[3] <- "ositivosF"
 names(datos_generales)[4] <- "0-9"
 names(datos_generales)[5] <- "10-19"
 names(datos_generales)[6] <- "20-29"
@@ -37,15 +37,18 @@ names(datos_generales)[11] <- "70-79"
 names(datos_generales)[12] <- "80-89"
 names(datos_generales)[13] <- "90+"
 
-datos_generales$Fecha = as.Date(datos_generales$Fecha, format = "%Y/%m/%d")
+edades<-c("0-9", "10-19", "20-29", "30-39","40-49","50-59","60-69","70-79","80-89","90+")
+
+datos_generales$Fecha = as.Date(datos_generales$fecha, format = "%Y/%m/%d")
 summary(datos_generales)
 
 
-
+#for (i in 1:10) {
 #########################
 #       NORMALIZAR      #
 #########################
-datos_generales$cero_nueve_norm = normalize(datos_generales$"0-9",
+
+datos_generales$cero_nueve_norm = normalize(datos_generales$edades[1],
                                                     method = "range",
                                                     range = c(0, 100) # De 0 a 100 de manera arbitraria
 )
@@ -54,7 +57,7 @@ summary(datos_generales)
 ##########################
 # QUITAR FINES DE SEMANA #
 ##########################
-datos_generales = datos_generales[lubridate::wday(datos_generales$Fecha) %in% 2:6,]
+datos_generales = datos_generales[lubridate::wday(datos_generales$fecha) %in% 2:6,]
 
 
 
@@ -99,9 +102,11 @@ hitos = data.frame(
   )
 )
 
-dates_vline = which(datos_generales$Fecha %in% hitos$x) # Para que luego aparezcan en el gráfico.
+  
 
-ggplot(datos_generales, aes(x=Fecha)) +
+dates_vline = which(datos_generales$fecha %in% hitos$x) # Para que luego aparezcan en el gráfico.
+
+ggplot(datos_generales, aes(x=fecha)) +
 
   geom_line( aes(y=cero_nueve_norm), size=1.5, color=color_PCR) +
   scale_y_discrete(
@@ -119,10 +124,10 @@ ggplot(datos_generales, aes(x=Fecha)) +
     #axis.title.y.right = element_text(color = color_pos, size=15)
   ) +
   ggtitle("Pruebas PCR y número de positivos darios (datos normalizados)") +
-  ############################
+############################
 # * CAMBIO CAMBIO CAMBIO * #
 ############################
-  geom_vline( xintercept = as.numeric(datos_generales$Fecha[dates_vline]),
+  geom_vline( xintercept = as.numeric(datos_generales$fecha[dates_vline]),
             col = "black", lwd=0.5, linetype = "longdash") + 
   annotate(geom="text", x = hitos$x+3,
            y=hitos$y,
@@ -130,5 +135,3 @@ ggplot(datos_generales, aes(x=Fecha)) +
            color="black",
            angle = 90
   )
-  
-  
