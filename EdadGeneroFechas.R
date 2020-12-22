@@ -103,29 +103,25 @@ dates_vline = which(datos_generales$Fecha %in% hitos$x) # Para que luego aparezc
 
 ggplot(datos_generales, aes(x=Fecha)) +
 
-  geom_line( aes(y="0-9norm"), size=1.5, color=color_PCR) 
-  #geom_line( aes(y="0-9norm"), size=1.5, color=color_pos) +
-  scale_y_continuous(
-   name = "PCR diarios",
+  geom_line( aes(y="0-9norm"), size=1.5, color=color_PCR) +
+  #scale_y_continuous(
+  # name = "PCR diarios",
+  #) +
+  # Mejorada la escala del eje X --> se ve mes a mes y con el nombre en lugar del número.
+  scale_x_date(
+    date_labels = "%b",
+    date_breaks = "1 months"
   ) +
-############################
-# * CAMBIO CAMBIO CAMBIO * #
-############################
-# Mejorada la escala del eje X --> se ve mes a mes y con el nombre en lugar del número.
-scale_x_date(
-  date_labels = "%b",
-  date_breaks = "1 months"
-) +
   theme_ipsum() +
-  theme(
-    axis.title.y = element_text(color = color_PCR, size=15),
+  #theme(
+  #  axis.title.y = element_text(color = color_PCR, size=15),
     #axis.title.y.right = element_text(color = color_pos, size=15)
-  ) +
+  #) +
   ggtitle("Pruebas PCR y número de positivos darios (datos normalizados)") +
   ############################
 # * CAMBIO CAMBIO CAMBIO * #
 ############################
-geom_vline( xintercept = as.numeric(datos_generales$Fecha[dates_vline]),
+  geom_vline( xintercept = as.numeric(datos_generales$Fecha[dates_vline]),
             col = "black", lwd=0.5, linetype = "longdash") + 
   annotate(geom="text", x = hitos$x+3,
            y=hitos$y,
