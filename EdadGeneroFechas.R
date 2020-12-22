@@ -49,6 +49,7 @@ datos_generales$"0-9norm" = normalize(datos_generales$"0-9",
                                                     method = "range",
                                                     range = c(0, 100) # De 0 a 100 de manera arbitraria
 )
+datos_generales$"0-9norm"<-as.numeric(as.character(datos_generales$"0-9norm"))
 summary(datos_generales)
 ##########################
 # QUITAR FINES DE SEMANA #
@@ -100,13 +101,14 @@ hitos = data.frame(
 
 dates_vline = which(datos_generales$Fecha %in% hitos$x) # Para que luego aparezcan en el gráfico.
 
-
 ggplot(datos_generales, aes(x=Fecha)) +
 
   geom_line( aes(y="0-9norm"), size=1.5, color=color_PCR) +
-  #scale_y_continuous(
-  # name = "PCR diarios",
-  #) +
+  scale_y_continuous(
+   name = "PCR diarios",
+   limits=c(0,100)
+  ) +
+
   # Mejorada la escala del eje X --> se ve mes a mes y con el nombre en lugar del número.
   scale_x_date(
     date_labels = "%b",
