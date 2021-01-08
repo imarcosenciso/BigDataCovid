@@ -16,6 +16,9 @@ library(viridis)
 library(reshape2)
 library(BBmisc)
 library(lubridate)
+library(webshot) # Para guardar las imágenes de las wordclouds.
+library(htmlwidgets)
+webshot::install_phantomjs()
 
 
 #########################
@@ -112,7 +115,7 @@ datos_generales = replace(datos_generales,is.na(datos_generales),0)
 # Normalizar las columnas PCR_diarios y positivos_diarios y añadirlas al dataframe.
 #for (i in 10:19) {
 #   
-  i=12#TEMPORAAAAAAAAAAAAL
+  i=19#cual de los rangos de edad quieres.
   
   datos_generales$cero_nueve_normalizado = normalize(datos_generales[1:(nrow(datos_generales)),i],
                                                       method = "range",
@@ -219,7 +222,7 @@ datos_generales = replace(datos_generales,is.na(datos_generales),0)
              color="black",
              angle = 90
     )
-  
 #}
 
 MiPLot
+
