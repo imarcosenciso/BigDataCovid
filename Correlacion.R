@@ -133,3 +133,42 @@ datos_generales_merged = subset(datos_generales_merged, select = -c(1) )
 # Mientras tanto, hacemos la matriz de correlación con lo que tenemos:
 M = cor(datos_generales_merged[,-1])
 corrplot(M, method="pie")
+
+# Entre 0-25%
+dgm_25 = datos_generales_merged[datos_generales_merged$poblacion
+                       <= quantile(datos_generales_merged$poblacion)[[2]]
+                       ,]
+M = cor(dgm_25[,-1])
+corrplot(M, method="pie")
+
+
+# Entre 25-50%
+dgm_50 = datos_generales_merged[datos_generales_merged$poblacion
+                       > quantile(datos_generales_merged$poblacion)[[2]] &
+                        datos_generales_merged$poblacion
+                       <= quantile(datos_generales_merged$poblacion)[[3]]
+                       ,]
+
+# Entre 50-75%
+dgm_75 = datos_generales_merged[datos_generales_merged$poblacion
+                       > quantile(datos_generales_merged$poblacion)[[3]] &
+                         datos_generales_merged$poblacion
+                       <= quantile(datos_generales_merged$poblacion)[[4]]
+                       ,]
+
+# Entre 75-100%
+dgm_100 = datos_generales_merged[datos_generales_merged$poblacion
+                       > quantile(datos_generales_merged$poblacion)[[4]]
+                       ,]
+
+M = cor(dgm_25[,-1])
+corrplot(M, method="pie")
+
+M = cor(dgm_50[,-1])
+corrplot(M, method="pie")
+
+M = cor(dgm_75[,-1])
+corrplot(M, method="pie")
+
+M = cor(dgm_100[,-1])
+corrplot(M, method="pie")
